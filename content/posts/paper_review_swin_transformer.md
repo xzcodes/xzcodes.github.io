@@ -15,7 +15,7 @@ socialImage: "/media/image-2.jpg"
 
 Code available [here](https://github.com/microsoft/Swin-Transformer) (no implementation at the moment of writing this review)
 
-![fig 3](/media/paper_review_swin_transformer/fig_3.jpg)
+![collage](/media/paper_review_swin_transformer/review_collage.png)
 
 An amazing paper from Microsoft Research Asia presents a brand new vision Transformer called Swin Transformer that 
 can serve as a backbone just like usual CNNs in computer vision and Transformers in natural language processing (NLP).

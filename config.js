@@ -22,7 +22,7 @@ module.exports = {
   ],
   author: {
     name: 'Maksim Zhdanov',
-    photo: '/me_pink.jpg',
+    photo: '/me.jpg',
     bio: `Machine Learning Engineer, Kaggle Competitions Expert, developing MLAAS platform, constantly learning and exploring new things.`,
     contacts: {
       email: 'dwdcodes@gmail.com',

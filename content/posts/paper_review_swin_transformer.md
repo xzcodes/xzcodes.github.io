@@ -8,7 +8,7 @@ category: "Paper Review"
 tags:
   - "Computer Vision"
 description: "My review of the paper Swin Transformer: Hierarchical Vision Transformer using Shifted Windows"
-socialImage: "/media/image-2.jpg"
+socialImage: "/media/paper_review_swin_transformer/review_collage.png"
 ---
 
 [Paper link](https://arxiv.org/abs/2103.14030)

@@ -1,0 +1,701 @@
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Maksim Zhdanov]]></title><description><![CDATA[Maksim Zhdanov]]></description><link>https://xzcodes.github.io</link><generator>GatsbyJS</generator><lastBuildDate>Sat, 27 Mar 2021 19:16:52 GMT</lastBuildDate><item><title><![CDATA[Paper Review: Swin Transformer: Hierarchical Vision Transformer using Shifted Windows]]></title><description><![CDATA[My review of the paper Swin Transformer: Hierarchical Vision Transformer using Shifted Windows]]></description><link>https://xzcodes.github.io/posts/paper-review-swin-transformer</link><guid isPermaLink="false">https://xzcodes.github.io/posts/paper-review-swin-transformer</guid><pubDate>Sat, 27 Mar 2021 23:46:37 GMT</pubDate><content:encoded>&lt;p&gt;&lt;a href=&quot;https://arxiv.org/abs/2103.14030&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;Paper link&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Code available &lt;a href=&quot;https://github.com/microsoft/Swin-Transformer&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;here&lt;/a&gt; (no implementation at the moment of writing this review)&lt;/p&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 960px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/d072d7db7677f8514689c71645354712/70a80/fig_3.jpg&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 33.33333333333333%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAHABQDASIAAhEBAxEB/8QAFwABAAMAAAAAAAAAAAAAAAAAAAECBf/EABQBAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhADEAAAAduAuD//xAAWEAADAAAAAAAAAAAAAAAAAAAAARD/2gAIAQEAAQUCiP/EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQMBAT8BP//EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQIBAT8BP//EABQQAQAAAAAAAAAAAAAAAAAAABD/2gAIAQEABj8Cf//EABkQAAMBAQEAAAAAAAAAAAAAAAABETFRcf/aAAgBAQABPyGvo7NMv0//2gAMAwEAAgADAAAAEHAP/8QAFBEBAAAAAAAAAAAAAAAAAAAAEP/aAAgBAwEBPxA//8QAFBEBAAAAAAAAAAAAAAAAAAAAEP/aAAgBAgEBPxA//8QAGhABAAIDAQAAAAAAAAAAAAAAAQARITFRcf/aAAgBAQABPxBvd88ibG+K1L+in//Z&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;picture&gt;
+          &lt;source
+              srcset=&quot;/static/d072d7db7677f8514689c71645354712/8ac56/fig_3.webp 240w,
+/static/d072d7db7677f8514689c71645354712/d3be9/fig_3.webp 480w,
+/static/d072d7db7677f8514689c71645354712/e46b2/fig_3.webp 960w,
+/static/d072d7db7677f8514689c71645354712/4a689/fig_3.webp 1133w&quot;
+              sizes=&quot;(max-width: 960px) 100vw, 960px&quot;
+              type=&quot;image/webp&quot;
+            /&gt;
+          &lt;source
+            srcset=&quot;/static/d072d7db7677f8514689c71645354712/09b79/fig_3.jpg 240w,
+/static/d072d7db7677f8514689c71645354712/7cc5e/fig_3.jpg 480w,
+/static/d072d7db7677f8514689c71645354712/6a068/fig_3.jpg 960w,
+/static/d072d7db7677f8514689c71645354712/70a80/fig_3.jpg 1133w&quot;
+            sizes=&quot;(max-width: 960px) 100vw, 960px&quot;
+            type=&quot;image/jpeg&quot;
+          /&gt;
+          &lt;img
+            class=&quot;gatsby-resp-image-image&quot;
+            src=&quot;/static/d072d7db7677f8514689c71645354712/6a068/fig_3.jpg&quot;
+            alt=&quot;fig 3&quot;
+            title=&quot;fig 3&quot;
+            loading=&quot;lazy&quot;
+            style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+          /&gt;
+        &lt;/picture&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;An amazing paper from Microsoft Research Asia presents a brand new vision Transformer called Swin Transformer that
+can serve as a backbone just like usual CNNs in computer vision and Transformers in natural language processing (NLP).
+&lt;br&gt;&lt;br&gt;
+There are two main problems with the usage of Transformers for computer vision. Firstly, existing Transformer-based models have tokens of a fixed scale.
+However in contrast to the word tokens, visual elements can be different in scale.
+Secondly, computational complexity of self-attention is quadratic to image size, causing problems in vision tasks with dense
+predictions at the pixel level.
+&lt;br&gt;&lt;br&gt;
+Authors offer stratagies to solve these challenges:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Hierarchical feature maps for convenient utilization of techniques like feature pyramid networks (FPN) or U-Net for dense predictions.&lt;/li&gt;
+&lt;li&gt;Computing self-attention locally within non-overlapping windows with equal number of pathes to achieve linear complexity.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 541px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/ec9665d3f8311c899853d9b3528e0272/8af7b/fig_1.jpg&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 100%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAUABQDASIAAhEBAxEB/8QAGAABAAMBAAAAAAAAAAAAAAAAAAECAwX/xAAVAQEBAAAAAAAAAAAAAAAAAAAAAf/aAAwDAQACEAMQAAAB7SsxqhWdguD/xAAZEAEBAQEBAQAAAAAAAAAAAAABABEhMUH/2gAIAQEAAQUCXryPEN2L7kX/xAAUEQEAAAAAAAAAAAAAAAAAAAAg/9oACAEDAQE/AR//xAAUEQEAAAAAAAAAAAAAAAAAAAAg/9oACAECAQE/AR//xAAXEAADAQAAAAAAAAAAAAAAAAAAEDEg/9oACAEBAAY/AnCZ/8QAGBAAAwEBAAAAAAAAAAAAAAAAAAERITH/2gAIAQEAAT8hepQzRQ3oYt0x0tD5yHZJEiP/2gAMAwEAAgADAAAAEMwHAP/EABQRAQAAAAAAAAAAAAAAAAAAACD/2gAIAQMBAT8QH//EABQRAQAAAAAAAAAAAAAAAAAAACD/2gAIAQIBAT8QH//EABsQAQADAQADAAAAAAAAAAAAAAEAESExQWFx/9oACAEBAAE/ECpZ6GEV9d6xIPXyMNh5YRUUc2XZAGqIbrlsy6wahZ//2Q==&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;picture&gt;
+          &lt;source
+              srcset=&quot;/static/ec9665d3f8311c899853d9b3528e0272/8ac56/fig_1.webp 240w,
+/static/ec9665d3f8311c899853d9b3528e0272/d3be9/fig_1.webp 480w,
+/static/ec9665d3f8311c899853d9b3528e0272/fd5d3/fig_1.webp 541w&quot;
+              sizes=&quot;(max-width: 541px) 100vw, 541px&quot;
+              type=&quot;image/webp&quot;
+            /&gt;
+          &lt;source
+            srcset=&quot;/static/ec9665d3f8311c899853d9b3528e0272/09b79/fig_1.jpg 240w,
+/static/ec9665d3f8311c899853d9b3528e0272/7cc5e/fig_1.jpg 480w,
+/static/ec9665d3f8311c899853d9b3528e0272/8af7b/fig_1.jpg 541w&quot;
+            sizes=&quot;(max-width: 541px) 100vw, 541px&quot;
+            type=&quot;image/jpeg&quot;
+          /&gt;
+          &lt;img
+            class=&quot;gatsby-resp-image-image&quot;
+            src=&quot;/static/ec9665d3f8311c899853d9b3528e0272/8af7b/fig_1.jpg&quot;
+            alt=&quot;fig 1&quot;
+            title=&quot;fig 1&quot;
+            loading=&quot;lazy&quot;
+            style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+          /&gt;
+        &lt;/picture&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Swin Transformer outperformes current state-of-the-art approaches on both COCO object detection and ADE20K semantic segmentation
+while achieving the best speed-accuracy trade-off on image classification.&lt;/p&gt;
+&lt;h2 id=&quot;methods&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#methods&quot; aria-label=&quot;methods permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Methods&lt;/h2&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 960px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/d072d7db7677f8514689c71645354712/70a80/fig_3.jpg&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 33.33333333333333%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAHABQDASIAAhEBAxEB/8QAFwABAAMAAAAAAAAAAAAAAAAAAAECBf/EABQBAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhADEAAAAduAuD//xAAWEAADAAAAAAAAAAAAAAAAAAAAARD/2gAIAQEAAQUCiP/EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQMBAT8BP//EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQIBAT8BP//EABQQAQAAAAAAAAAAAAAAAAAAABD/2gAIAQEABj8Cf//EABkQAAMBAQEAAAAAAAAAAAAAAAABETFRcf/aAAgBAQABPyGvo7NMv0//2gAMAwEAAgADAAAAEHAP/8QAFBEBAAAAAAAAAAAAAAAAAAAAEP/aAAgBAwEBPxA//8QAFBEBAAAAAAAAAAAAAAAAAAAAEP/aAAgBAgEBPxA//8QAGhABAAIDAQAAAAAAAAAAAAAAAQARITFRcf/aAAgBAQABPxBvd88ibG+K1L+in//Z&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;picture&gt;
+          &lt;source
+              srcset=&quot;/static/d072d7db7677f8514689c71645354712/8ac56/fig_3.webp 240w,
+/static/d072d7db7677f8514689c71645354712/d3be9/fig_3.webp 480w,
+/static/d072d7db7677f8514689c71645354712/e46b2/fig_3.webp 960w,
+/static/d072d7db7677f8514689c71645354712/4a689/fig_3.webp 1133w&quot;
+              sizes=&quot;(max-width: 960px) 100vw, 960px&quot;
+              type=&quot;image/webp&quot;
+            /&gt;
+          &lt;source
+            srcset=&quot;/static/d072d7db7677f8514689c71645354712/09b79/fig_3.jpg 240w,
+/static/d072d7db7677f8514689c71645354712/7cc5e/fig_3.jpg 480w,
+/static/d072d7db7677f8514689c71645354712/6a068/fig_3.jpg 960w,
+/static/d072d7db7677f8514689c71645354712/70a80/fig_3.jpg 1133w&quot;
+            sizes=&quot;(max-width: 960px) 100vw, 960px&quot;
+            type=&quot;image/jpeg&quot;
+          /&gt;
+          &lt;img
+            class=&quot;gatsby-resp-image-image&quot;
+            src=&quot;/static/d072d7db7677f8514689c71645354712/6a068/fig_3.jpg&quot;
+            alt=&quot;fig 3&quot;
+            title=&quot;fig 3&quot;
+            loading=&quot;lazy&quot;
+            style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+          /&gt;
+        &lt;/picture&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;h4 id=&quot;overall-architecture&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#overall-architecture&quot; aria-label=&quot;overall architecture permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Overall Architecture&lt;/h4&gt;
+&lt;ol&gt;
+&lt;li&gt;Splitting RGB image into non-overlapping pathes (tokens).&lt;/li&gt;
+&lt;li&gt;Applying linear embedding layer to translate raw feature into an arbitrary dimension.&lt;/li&gt;
+&lt;li&gt;Applying several Swin Transformer blocks with modified self-attention computation and maintaining the number of tokens.&lt;/li&gt;
+&lt;li&gt;Reducing number of tokens by patch merging layers creating the same feature map resolutions like those in common CNNs.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id=&quot;shifted-window-based-self-attention&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#shifted-window-based-self-attention&quot; aria-label=&quot;shifted window based self attention permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Shifted Window based Self-Attention&lt;/h4&gt;
+&lt;p&gt;Standard global self-attention is not quite suitable for representations of high-resolution images because of quadratic complexity.
+Authors propose to compute self-attention within local windows.&lt;br&gt;
+Here is the comparison of computational complexities of a global MSE module and a new window-based one&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;M is the size of &lt;em&gt;M x M&lt;/em&gt; patch&lt;/li&gt;
+&lt;li&gt;Images consists of &lt;em&gt;h x w&lt;/em&gt; patches&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 532px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/b196ce2767ca3f962e42fa7c4c91df6b/89a37/complexities.png&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 14.583333333333334%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAADCAYAAACTWi8uAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAkUlEQVQI11VP2w6DIAz1/z9yMk3mkLuAmEE8lm4+7CSk0HIuHc7zREdrFcvywvgYYa1FSglqlTBGI+8FWmtoY7iWcjDn5sYU6U/m+3A3a62YpieEEHyc8wjBk6BB8AHWWCi1kulCM4fjJ9rhKMAW479ga43cFZEU5nnmJHvZ+d0T109loU6W8s0b3IhxQ87fhBdV6OaS5wOHwAAAAABJRU5ErkJggg==&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;picture&gt;
+          &lt;source
+              srcset=&quot;/static/b196ce2767ca3f962e42fa7c4c91df6b/8ac56/complexities.webp 240w,
+/static/b196ce2767ca3f962e42fa7c4c91df6b/d3be9/complexities.webp 480w,
+/static/b196ce2767ca3f962e42fa7c4c91df6b/b5f85/complexities.webp 532w&quot;
+              sizes=&quot;(max-width: 532px) 100vw, 532px&quot;
+              type=&quot;image/webp&quot;
+            /&gt;
+          &lt;source
+            srcset=&quot;/static/b196ce2767ca3f962e42fa7c4c91df6b/8ff5a/complexities.png 240w,
+/static/b196ce2767ca3f962e42fa7c4c91df6b/e85cb/complexities.png 480w,
+/static/b196ce2767ca3f962e42fa7c4c91df6b/89a37/complexities.png 532w&quot;
+            sizes=&quot;(max-width: 532px) 100vw, 532px&quot;
+            type=&quot;image/png&quot;
+          /&gt;
+          &lt;img
+            class=&quot;gatsby-resp-image-image&quot;
+            src=&quot;/static/b196ce2767ca3f962e42fa7c4c91df6b/89a37/complexities.png&quot;
+            alt=&quot;complexities&quot;
+            title=&quot;complexities&quot;
+            loading=&quot;lazy&quot;
+            style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+          /&gt;
+        &lt;/picture&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Moreover, there is an idea about transferring shifted window partioning strategy to the next MSA block to create
+additional connections across windows.&lt;br&gt;
+Computation of Swin Transformer blocks:&lt;/p&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 429px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/17240c57f8a0c21bf555d1d03aee7aa5/3d026/swin_blocks.png&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 38.33333333333333%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAICAYAAAD5nd/tAAAACXBIWXMAAAsTAAALEwEAmpwYAAABQ0lEQVQoz22Ri26DMAxF+/8/t0rbtEqFpjyaBxAgUCC8eueko9raRTIGHB9f2zvQud1uGIYB67qi6zpvfd9jmiZYO1DMYhxH2NFisPd7LjZaS7krNoY7O/dwQc65h8ZxjK/DAZ8f70gvF7BTQMYQnc8+LqVAWdVIkhRNYzDP0ytwXRZorbGQV1IiiiNwISCdKQVB/4wxsATMs9wnOpXe/4D+AOd5Rl4UvrU0ScDYCZwgUipkmSKoRF3XaAlaFBrPZ4M9gAsBhZBozNWrTAgaHI84hQGOQYgLF4gjp5r7MWiCmrqiYtkD+NJyWVa0COvVFqQ2z3NSeFfp1AuhoFQGXZZ+YaYqKUc/QE8tT1SZ05CvtMnRq9vv3xCEIVjIcI4Y4pT7oq5Q2zZecd931NE/W/4teXvfzCW4BWxx14H/fprf5r8BJMhn4CWH8wYAAAAASUVORK5CYII=&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;picture&gt;
+          &lt;source
+              srcset=&quot;/static/17240c57f8a0c21bf555d1d03aee7aa5/8ac56/swin_blocks.webp 240w,
+/static/17240c57f8a0c21bf555d1d03aee7aa5/649fd/swin_blocks.webp 429w&quot;
+              sizes=&quot;(max-width: 429px) 100vw, 429px&quot;
+              type=&quot;image/webp&quot;
+            /&gt;
+          &lt;source
+            srcset=&quot;/static/17240c57f8a0c21bf555d1d03aee7aa5/8ff5a/swin_blocks.png 240w,
+/static/17240c57f8a0c21bf555d1d03aee7aa5/3d026/swin_blocks.png 429w&quot;
+            sizes=&quot;(max-width: 429px) 100vw, 429px&quot;
+            type=&quot;image/png&quot;
+          /&gt;
+          &lt;img
+            class=&quot;gatsby-resp-image-image&quot;
+            src=&quot;/static/17240c57f8a0c21bf555d1d03aee7aa5/3d026/swin_blocks.png&quot;
+            alt=&quot;swin_blocks&quot;
+            title=&quot;swin_blocks&quot;
+            loading=&quot;lazy&quot;
+            style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+          /&gt;
+        &lt;/picture&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Shifted window partitioning will result in more windows and some of these windows will be smaller than &lt;em&gt;M x M&lt;/em&gt;.
+So, authors propose efficient batch computation approach with cyclic shifting toward the top-left direction.
+Since batched window might be created of sub-windows which are not adjacent in the feature map, mask is applied.&lt;/p&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 563px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/af1e9e9f2bca03960efe1f67999126d9/7cb89/batched.png&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 38.75%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAICAYAAAD5nd/tAAAACXBIWXMAAAsTAAALEwEAmpwYAAABuklEQVQoz22SyZLTMBBA55/5Co5c+AJucIMTRRXMAaiCA6GSTBwvycSTeJEXyY68O37IzpWu6pJ60VN3Sw8Y6XRNLUvqvGRoOyZaurFmmNo5zDiMjP1Ab2JVqWmajqHX6CZAGu1v9ZI3TRMP80YFCeJ0QRzOFCJHqZw0PCOCkCgwdpxSZpKfn77y9tVrvn34TGZy/MgllAdkmXG7Lcg7sE4LZJQu4Cq/IiKFumRcvJD13yM6K9BJSW5y7PWO+OXC8znl6Gc0uiGOJF0/LlU+9H3P0XI4rm3c1YbL8wmZm9vPa3zfqGeTi5g4jlk9/ub9m3f8+vKdxgBkoSirjKIQjGN/Bw7DQG4CSimyLDVBRVNrXGfL3l4RBz51LWmqF87WgR8fH3H+WIhEkCQxURIQhieSNL0DK61JhKBuapQsyEx1czXCzC3NzF7MBxPyXJHmGa2pJDagvW1zNN2cfB/P8Qjj6A4slGS33XD0XBzHZve0wTu47I3tui627bJ92i2+7WaLtbewrD1FWaJ1xfV6RUpluqjuwMk8z9z2YGbZde2yDuNghjzbHb35Ll3XM8961rZtF9//ZP42/wDznlk4lbQnTQAAAABJRU5ErkJggg==&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;picture&gt;
+          &lt;source
+              srcset=&quot;/static/af1e9e9f2bca03960efe1f67999126d9/8ac56/batched.webp 240w,
+/static/af1e9e9f2bca03960efe1f67999126d9/d3be9/batched.webp 480w,
+/static/af1e9e9f2bca03960efe1f67999126d9/a1a69/batched.webp 563w&quot;
+              sizes=&quot;(max-width: 563px) 100vw, 563px&quot;
+              type=&quot;image/webp&quot;
+            /&gt;
+          &lt;source
+            srcset=&quot;/static/af1e9e9f2bca03960efe1f67999126d9/8ff5a/batched.png 240w,
+/static/af1e9e9f2bca03960efe1f67999126d9/e85cb/batched.png 480w,
+/static/af1e9e9f2bca03960efe1f67999126d9/7cb89/batched.png 563w&quot;
+            sizes=&quot;(max-width: 563px) 100vw, 563px&quot;
+            type=&quot;image/png&quot;
+          /&gt;
+          &lt;img
+            class=&quot;gatsby-resp-image-image&quot;
+            src=&quot;/static/af1e9e9f2bca03960efe1f67999126d9/7cb89/batched.png&quot;
+            alt=&quot;batched&quot;
+            title=&quot;batched&quot;
+            loading=&quot;lazy&quot;
+            style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+          /&gt;
+        &lt;/picture&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Also, relative position bias is used&lt;/p&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 513px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/9ab84df6880e41f1e08597efefacf130/267f6/bias.png&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 59.583333333333336%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAMCAYAAABiDJ37AAAACXBIWXMAAAsTAAALEwEAmpwYAAACSklEQVQoz11TiXKbMBTk/78rnenhNnFscwgQIMRhLmPHMXHA2a6UcdupZjSSkfT2eGtn9esnvjw8IAgCSBnj+7evWK/X2O22eN5s8PJyRl1VyFWGOIogRIR9vUeSxEgzfotjqCzHcRwxDAc4IhJ4enyGrEKs+w10r6HOCvmk4EoXbdPYR+vHJyQEVLlG4PsESFk0hevtEMuUQAGqsoRTEb2uK+gyx+FlxGE8oO0aoicsEPGBB5kmUErBJ2vfF4gM0zCG5wfweX6iimWZMc8znGVZ8PHxgX/H/D5juky4Xq92movm3ts04XK54Hw+Y5re7NnEb/O8/Hnr3G43SEqKSDkII0pSaCizaRu8vr6i6zpsty6Z+tA6R5qmGI9HtDzv+4HfNPphwHigsqaFY6qaorfbYtf396tlY/aGwX1v5kxZC1cz7qrMep/mjlPXNeJEErG1zAYimc6WRYWRnTOzqkvroblbs8Nd1352Ps9RshGmGUVR4HQ6wVFK0+TYFpRxgoxRULmRlrFoYfc+5YpQQBI4Y2fN/aIgCC0IhEASS2wYMWOPZSjonR+ERFQ2Y4aNYC4jejsMPTPpIqN3WZYyQpJnPtUwi6myv8tCwyNoVdVwyrKwjxNGI0mJrAvbpJiZE4GwMvu+Q65Lrgeea+z3e+giRxiGNoeB78IjiA228cD4YTrouTtK0baTUkob3NSyiqxXXddDM9hmNX619LIi4JHZTUmookVOxs2P1YposWVm/gU7d4v1doPA9bBlmIUI/3b7v8zexz3YvwHwA3na3OiLbgAAAABJRU5ErkJggg==&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;picture&gt;
+          &lt;source
+              srcset=&quot;/static/9ab84df6880e41f1e08597efefacf130/8ac56/bias.webp 240w,
+/static/9ab84df6880e41f1e08597efefacf130/d3be9/bias.webp 480w,
+/static/9ab84df6880e41f1e08597efefacf130/3be34/bias.webp 513w&quot;
+              sizes=&quot;(max-width: 513px) 100vw, 513px&quot;
+              type=&quot;image/webp&quot;
+            /&gt;
+          &lt;source
+            srcset=&quot;/static/9ab84df6880e41f1e08597efefacf130/8ff5a/bias.png 240w,
+/static/9ab84df6880e41f1e08597efefacf130/e85cb/bias.png 480w,
+/static/9ab84df6880e41f1e08597efefacf130/267f6/bias.png 513w&quot;
+            sizes=&quot;(max-width: 513px) 100vw, 513px&quot;
+            type=&quot;image/png&quot;
+          /&gt;
+          &lt;img
+            class=&quot;gatsby-resp-image-image&quot;
+            src=&quot;/static/9ab84df6880e41f1e08597efefacf130/267f6/bias.png&quot;
+            alt=&quot;bias&quot;
+            title=&quot;bias&quot;
+            loading=&quot;lazy&quot;
+            style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+          /&gt;
+        &lt;/picture&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;h2 id=&quot;experiments&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#experiments&quot; aria-label=&quot;experiments permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Experiments&lt;/h2&gt;
+&lt;p&gt;Experiments were made on ImageNet-1K image classification, COCO object detection and ADE20K semantic segmentation.
+ImageNet-22K was used for pre-training and ImageNet-1K for fine-tuning.
+&lt;br&gt;&lt;br&gt;
+Here we can see that Swin Transformers achieve great speed-accuracy trade-off compared with the state-of-the-art CNNs.&lt;/p&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 568px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/a43f66f08da6e30c44de8a38ee588190/10e91/exp1.png&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 142.91666666666666%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAdCAYAAACqhkzFAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFA0lEQVRIx3VVh3bbSBDL/39TcqnvLnYUq1DsnRJFFVK9uyDA2pZPvnd6j9Ka68XMYDDYD6fTCU3TYLlcYjabIcsyFMUAZVmiHJYYFAUGw4F5NxwOzTPi3mAwwGKxwHq9Ns/j4yP0+aDF8XjE+XzGeDKG1bfQ+tVCq/XL/HY7HQSBD9t20Wm3cXfHvdsbfP3+A2U1IugSzXyOp6enZ8DXxWQyRToocH9/D+7C811mNmSWQ8zqGabMvhpVSNMUju0wSIhOtwvHcRHF0RvgbreDHwR8mSAMEyRVjKIZwO45qAlS5BlGoxKT8cSAzUlPm5lWo5Ep3XUdVjYxYAIl4BaW1UcYxYgFOA6Rr3MEjofj4YCYgSbTKeq65jo2B9M0wZz8qRrxe2QfLoCbzZpc/YLdtxGxDDvuI234yyAC8XwfWV6YZnieh+12i4jBRcFiMWcioeHwAqiFSm73enD7HqJ5gmY7Q69roWZ5WZIaLqUEZShVxElMXmvT3SiJmO3yHWAYoscMfSdAskqxONQk28Fms0FCkKqqyGfNdYJHHgqjyJR8ICUJwTfM+gow4iHH8xF5oclQgKEfYk3AoshRjcdGBcpQh/S72+8NYJpmBNy9AeorZNvb3d5zhnOWs6QeWbK48clbQRErS98PTMlhGDHYFqvVChHXy+XqDVDCFuGWbcNzPXiNh3peE7BryuyTipgBM8rHdp+bojIXnCxNV8738383RV8Sb48AXmjDqh005KfbaWNGuTguhUvO0iRBn0GXqyWBHUynMzN6IRs6Y+ArDrXh9R3EAx/BPsb96QGB72FP0ZumkMNmvmA2hRnRIAyY1cKM7IDTtV5vrgEnVLp058U23KVPoD3Hq48lA7nsdpbnGJHDgPrb7w/MODQlr5htSjNZrtbXHJqJYFmaz4Zi3bODVq9ruBGvasq4mph9dVbZq+umKdShwK8y1GdYDhktwXazw8PDAzOzsWMDQpan7CRkTcz5dDbvFPhZNsm1bF4X4iIMfYr5eTOi2A/MVA2pqrGZlDTLIU8Z0RgO5E8+UDCIDOYCqChjki5DzRjt9vYWNz9/4tPHj7jjjH/+8gW3Nzf4TX/8+u0r7n7/xue/PqHT6bHTU9Mo9eBisK8l79iI2bzBiiKd0mi7vbYZsZwNKUs5dWmyDXyHRnvHfQspNVgMuMdknvDih+JLMzvgRsJ/aNaNKcem5l6zLumH5YvtJ0lmTFU+adFQ1DRp9GKwAi7JibRVlgXNIaEMNjxk0UznzCgwTZAKJPLj6WgOqkRjHokauXk/eiVs6k1+F819irhBt9sxl1ZAP9QhObpHcIEoW0lGfqiATXM1egRkKRorGYFdu6gXzcssz1i6w44HpnSbpQpQwpYhaMJ8upSm5gIoDjXwMgDXJW/jChvKoccMdX/oFlR2Oa9RhwFXnAqfWU9mU5OhR5FLUv8RdsUrUc5xOp7N38r2TKtSudpbNLxT6N5mCNhA9UBWlmXp+ztlw+iF4arT7jwbKgHalEYURLSvHq3NQp+z3mVX1WmVLrkIrMcRlVs9vnZ5Qs39/c9PU5a40bpF8fbJnQ52WLrV79OA+XQsOPTHVusG3398MxTd0eYU6PSS5YcVBzvmLZdXGcpiaETskmi58ogjJzNN4xzxgja24kTcPxgz0YSJksPhaGzsMilqyvnpjPP9mfxp48Hct3rkfaeXQ6fH42Ua/u8jDv8A0jJpBbFR8sYAAAAASUVORK5CYII=&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;picture&gt;
+          &lt;source
+              srcset=&quot;/static/a43f66f08da6e30c44de8a38ee588190/8ac56/exp1.webp 240w,
+/static/a43f66f08da6e30c44de8a38ee588190/d3be9/exp1.webp 480w,
+/static/a43f66f08da6e30c44de8a38ee588190/bebff/exp1.webp 568w&quot;
+              sizes=&quot;(max-width: 568px) 100vw, 568px&quot;
+              type=&quot;image/webp&quot;
+            /&gt;
+          &lt;source
+            srcset=&quot;/static/a43f66f08da6e30c44de8a38ee588190/8ff5a/exp1.png 240w,
+/static/a43f66f08da6e30c44de8a38ee588190/e85cb/exp1.png 480w,
+/static/a43f66f08da6e30c44de8a38ee588190/10e91/exp1.png 568w&quot;
+            sizes=&quot;(max-width: 568px) 100vw, 568px&quot;
+            type=&quot;image/png&quot;
+          /&gt;
+          &lt;img
+            class=&quot;gatsby-resp-image-image&quot;
+            src=&quot;/static/a43f66f08da6e30c44de8a38ee588190/10e91/exp1.png&quot;
+            alt=&quot;exp 1&quot;
+            title=&quot;exp 1&quot;
+            loading=&quot;lazy&quot;
+            style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+          /&gt;
+        &lt;/picture&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Swin Transformers scores better compared with ResNet-50, ResNeXt and DeiT as a backbone for Cascade Mask R-CNN and other detection models.
+Also the inference speed is much higher than DeiT’s because of linear complexity to input image size.&lt;/p&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 536px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/54029cdd57a847ebe826e3fe42e255a7/2d920/exp2.png&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 170.83333333333334%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAiCAYAAABfqvm9AAAACXBIWXMAAAsTAAALEwEAmpwYAAAGLUlEQVRIx1VWh5KjWAyc//+ku7qwO8nZg43BmByNcc5xRtctZrfqXIUxBvRarVbrPV2vV1mv17Lb7WSz2eixXC4ljmMJfF/CMBQf5yiKJMDvJMnw7F622y2Ozfd5i/+28ng85Onz81MWy4V4XijTspLdfifWyJJuty8vL8/y88dP/O7JX3/+Ic1mS97emggeSpHnMp2WWCCWCAuFUSz3+12eBJ95VclwMBTbHsvlchbPnch4PFFUCZASse9jwaJQtC7udzsdKQFgOByIO5mI7Th49ypP+8NBJriYTBwZO2MppoVkaYqgrgbodbsImohpjhRNr98HsqmiPp2O4uCdNE0kjKMaIb/IH1dmCufzGQEioHDxYAqkY8kR2MWiMQLaY0fyPJOP/oesVisZGAbo8vX5Ozlkyl9fXzKfzzUwPyle9D0PL+ZA7uJciGXZ+D/RF2ezmSJmcTzXA/IUR1IHPCBl8kWukjiQqporQgfIsiwT46OvFR8MTf1/ZFmSp7kYfQPqWGEhS5H7YYDsLnXKFYpCzsqylP1+D7l4YvNBFKUD8oMgkD5S9AJf+h8GpBRLCxUn0h64ZMoOkJ5O5zplrmSaQ0VUV32m6S4Wc/GDUKpZpWnNsLDvM4ulmMOhbLY7pYTp/pbN7XZTbiiDLirKo91pyfPzT2m8N6Td7kAaQ2k0m/LeeJfnlxd5e3+XJn6z0iY0O59XCua3DvnZokOYpoGqGYMPHAZeamqq5IgZtNotldZ7oyFj2wL3tnhAXEAFKTLQgHtUlkL1oXZ7bNUahIR41g4A2UVZIGgqKVBQMmxJLjzAohQ2f49Q9cPpBISQTAjS0zQDFxEqigOtxTR839P/0hTdslho8chrAFSsfAzBM1UuHIFrLcoRsiHBPqrc6/UgixHS7KOyPlJsy2g0QhVdtJerz7EAI5wpH9u2UTQf6Y9Vt+fLpQ7Ih6M4xQMWAnkyBNFEPEaP+riOcCRpjSTLEl3EdevusAAgRFBmeWLKx+NBV5hARyR6giDsiiiMVLSOY6u7cAHqkZwyCxbDwvM2GoCc+tDiEW37tIOX9T8GKthOuwnXMaQFCdEsmDpRWyMT1XWAzFQqBkiZgVqdNt7raUHGQH0kwgvypoiLYqqdUpZToHKkAWn8+PcfeX19lZfnZ1w3VYPqkf/+rVxW6H9Khh1DL/ifDmkQh/1BHveHXrPHc7w0Br8pKr/ZbNUkhkBDzfE+wdzxPGljyzLGE237fD7BtZfiTTyJ0afX+1UWq6XaPxEQDb2QHPKamqxHA69L2F6hWTK4BiTxQ9NUooMIxC8SSaeZrJcrtbQVel3dGlrbon8X0CRnD9uWM4l14FziONFe3m7WWl1WO5nlsr6sZb1by2qxUlder5cqbKI4HU8wixno2f9iS1aYSSVQfjJlaseGDFxnIi5SioNU/DX0V/myXe3kBqLVkeDOARASAD/H4xHFmAP9GoC2UmIR5ZA3mfIYfRzC/xwb82WDVkTaEQbT/hsJA3Ik7FG4JajgLJrPl7CwraZPY9aA7BQLbsxq2ggWeIEk61gmlaPVPZ2PbPfvgDkKeNUKM7MKvqmzGffyby/VucxqcQzQ5tmb/s6VajXXwc1VfyFktQ/7I17OFTnvU3uPx10lpAH5RRehg6QgnatG+0yWSOOCVuJL5I2uzp0DHYWTkQhPOF+vN9XuGde/EbI/DbQT22dgDcVbhCriXxMuUBtLVH/kLUNfs9IfxlBHQIA+brXa9dS7XC862Qz0M8dAGze4FaHpjqBNeqFB14b3MU3qcot9DBdqfY8Hmkqr1dJMNOW8yPUgfzSDCubKIV5ih3BCW5GzFUWOgFdwVc0XGpyuxOFV5lMENmthkyNavgcN0qbodSV2EFmWwnCx7YBpDIyB+h27iSZgjkx19BEyCdCqN/BI6ahsuBF6bbzhoRECYOJ16domrKuLndab7m1acB6dhhhS3FR1Ol1wbuK6dnTlHwPrhjZ84r7OgpUvVmt13nrVSLvCxYSjibpuoBum2nxN7Xd1eVQ9RSYW7M5HBvfbvd59cUhnkEw5BZfohjRKsAsrIewY/1UYD4kWo8gKneElBn8aJjIrsSGAh7LHOSI+vz7lP5/suE/EikeMAAAAAElFTkSuQmCC&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;picture&gt;
+          &lt;source
+              srcset=&quot;/static/54029cdd57a847ebe826e3fe42e255a7/8ac56/exp2.webp 240w,
+/static/54029cdd57a847ebe826e3fe42e255a7/d3be9/exp2.webp 480w,
+/static/54029cdd57a847ebe826e3fe42e255a7/c5a1c/exp2.webp 536w&quot;
+              sizes=&quot;(max-width: 536px) 100vw, 536px&quot;
+              type=&quot;image/webp&quot;
+            /&gt;
+          &lt;source
+            srcset=&quot;/static/54029cdd57a847ebe826e3fe42e255a7/8ff5a/exp2.png 240w,
+/static/54029cdd57a847ebe826e3fe42e255a7/e85cb/exp2.png 480w,
+/static/54029cdd57a847ebe826e3fe42e255a7/2d920/exp2.png 536w&quot;
+            sizes=&quot;(max-width: 536px) 100vw, 536px&quot;
+            type=&quot;image/png&quot;
+          /&gt;
+          &lt;img
+            class=&quot;gatsby-resp-image-image&quot;
+            src=&quot;/static/54029cdd57a847ebe826e3fe42e255a7/2d920/exp2.png&quot;
+            alt=&quot;exp 2&quot;
+            title=&quot;exp 2&quot;
+            loading=&quot;lazy&quot;
+            style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+          /&gt;
+        &lt;/picture&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Proposed model surpasses other backbones in ADE20K too. &lt;/p&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 542px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/a97e43efbc9c099f6096387d31f68350/c0388/exp3.png&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 95.83333333333334%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAATCAYAAACQjC21AAAACXBIWXMAAAsTAAALEwEAmpwYAAADfUlEQVQ4y41U2XLjOBCb//+yySS+dFP3fViyZFtybMeTYNH0Tqb2bVXFhKJJCA2g+WNZFhwOB5zPZyRJgvV6A9d1MU0Tjscj9vs9iqJA09Qo8hxpmj7f2xZlVep5znXZJ8+Pz89Pbm6hPAehH2IYDvA8D16gkOYpN3awrJ0G8nwfHj8WBgGqutZgsi6Abdc9AS+XC0zTgGnYsBsH548jXMfDarOFcj0keQZFoH23x/v1qpmbxg513WgiFvfmRYV9/y9D2RCEPsspkfQp6nuLOEygghBVUaIhw7KqINI8fj8wzzPXC0o0Y6RUdVXrqmSuAeVPmsQIowDBHOD+8eAHQjieQp5mqLtWs+zJoCxLDDx4nEbcbjfcNOMjmd9wvV2fgFcuBr6iZgH8U4jlY+Z78B/AjIyGYUAcxdS0pyQWWprQNg3nDoqqRfdHw/P5RB1shCqEN7iol1rPBbDIclRtgyzLMI4Hln3RGtq2hY7ADY1xqXOeFzj0/RNQan99e8Vua2Jb7pBPGXbrLddWdNuHz/LFlI5MpRphaloGjSgRxwm2G4Nxy1AxQhqwJ3JE/YqCMegrROcEgQqgFB1miTHLTlnyRN3GcdTZ9PnbgfOKmrqOSxkGZnn467JNTZI4RTKlSOcSWZLClxzGMVKWG/L/iUC3210DGoxZyxjJWl1WONP55f3yBHw8xNUAlmkhaBQut3dM44TtbscQe7qD/MBnZzRo246j0b/F/OiRZDqaM3K/7PsGTLMELy+/4BoO7vc79ajYgmvNbk9JTNvWQZaoiETr1RsyGuF5rj7nUSLpmO8ciuCGYSKjyPJIeEVDYTTPC/w4wokMpE2FieNa/NDA2NS676u61WZ9A0oklFKo2UJ/AGPKIKKLsyXZzewUeS7UKk1jHfCW63EYYWS4j8fTE1DKiMjg588XOJatEy8ReOOtk7BkOfj2+sqIxJRhBZ8R2hkGy1SahJyTW6pmX2vAnIdWFLkocljcaFsmYxTBpiGbzQYe9bMsS2u62260XooJ8JSrA77iuuS0ZHtqQLnH5OtFWWhdhJGrfLYdI0RgcdixXX1BKD+Cx9vFVxFClholEXKJGMMv96MGFPds2+EVZhNIMZMOGZkE4TtHSDn6favNGQ4TjWj17XLgGKj9QEJd12O5vD8BF96HMkT0hWbI/Sj5EjdlLuP/Pl9fX/gHSVd5mVsrZqAAAAAASUVORK5CYII=&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;picture&gt;
+          &lt;source
+              srcset=&quot;/static/a97e43efbc9c099f6096387d31f68350/8ac56/exp3.webp 240w,
+/static/a97e43efbc9c099f6096387d31f68350/d3be9/exp3.webp 480w,
+/static/a97e43efbc9c099f6096387d31f68350/3f954/exp3.webp 542w&quot;
+              sizes=&quot;(max-width: 542px) 100vw, 542px&quot;
+              type=&quot;image/webp&quot;
+            /&gt;
+          &lt;source
+            srcset=&quot;/static/a97e43efbc9c099f6096387d31f68350/8ff5a/exp3.png 240w,
+/static/a97e43efbc9c099f6096387d31f68350/e85cb/exp3.png 480w,
+/static/a97e43efbc9c099f6096387d31f68350/c0388/exp3.png 542w&quot;
+            sizes=&quot;(max-width: 542px) 100vw, 542px&quot;
+            type=&quot;image/png&quot;
+          /&gt;
+          &lt;img
+            class=&quot;gatsby-resp-image-image&quot;
+            src=&quot;/static/a97e43efbc9c099f6096387d31f68350/c0388/exp3.png&quot;
+            alt=&quot;exp 3&quot;
+            title=&quot;exp 3&quot;
+            loading=&quot;lazy&quot;
+            style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+          /&gt;
+        &lt;/picture&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Finally, there is an interesting ablation study that shows us that shifted window approach outperforms single window
+partitioning with relatively small latency overhead.&lt;/p&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 516px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/c3f4a4bf5e822957deea2784efffbcf8/75dcb/exp4.png&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 77.91666666666667%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAQCAYAAAAWGF8bAAAACXBIWXMAAAsTAAALEwEAmpwYAAADDklEQVQ4y21UiXLaMBTk//+rCYGAIeD7tuULYzCHSTmS7T5lmnam9QxIst5brfbt8+h2u6FtW2w2m39+ZVEgzzJkaYa6rtF1nX4XRTEa7ktelqX6lzLufr9j9Pn5icfjARl/PzI/nc4IfR+ObcF1HNRVjf1+j5Tgtm0jy3Mc+gOiOIYxNzhGOnf08fGBy+WC3a5DUzeoyhLDcEbTbGAYc2z5PggDJElCcBsl99t2C8dy9HzL+Xq1Zv7uC1D+OlJ3HRcRE+evU50sAYaxwOFwQBAEUGSUkk2aprheb/A8Hx1jhvMZlmVjeL/8YSisAgZY5hq2Y6NuGuqS4fn5Ge2mwWK5xNq0yGSFFdnIIZPJlDE5uu0WL+MXrek3oDzHfo84CnjV5mt9PMJ1XbxfBlR1hZoJdVmwKKUWP0sIRjnuLKri4SLb95VlIVXKVMbrphi4PhFQiiJ7SimUVYWCo1IFbre7ZrftWtx+Xln1gLr/BViyggk1EhsUtEUY+NoiGfV6J2BBsA3FL1XOwtV43B9INcMdGV5prQRXAmtAoT8MAxSBHNfTost1xXevM1aZGpmmCZ+FMdfU2HZ0/PLtjV5t0dNKM8b1h17bbRSS7ny5gO8FGI+fMH0Zw2YBpi8TnTQ3ZjAWBp5YoDWBp5MxTMuCMZvhx9MzPbjA66uB+XyOoqwwSuIQIZ0vHRGGHoo8Q+R59JlFG8VQZOzxMI8y1JQkCkKtX5LEsNY0PWOrqkRGY8dRSMBcgCKaN9GiC2PPdTim+to6OQwph4skjdkhivsBdQ7hOR5BeCht53o2C5YTMGUHeK4OsHmioi0c19fspMV8vnccH3khQGw5gqY0vpAQgJhMY7KTrmmaFiNpbOnDkABy9ZSMBMChXqHv8aCILBWrL8kEoRcT9nPOOMXqihRCSMUBtk2Nkc8OSeKE2gTadxHnC3aEQzYRg62VCdfnHtvS5b5HxoqH1/Rj3/f8YOyw53hmYwx0x6jbdvyyHGmVHgduntibO1phz/ba7fa6pyVB2u1wPOn1OxPv7Of/Pb8AcA2ZNw4CfdcAAAAASUVORK5CYII=&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;picture&gt;
+          &lt;source
+              srcset=&quot;/static/c3f4a4bf5e822957deea2784efffbcf8/8ac56/exp4.webp 240w,
+/static/c3f4a4bf5e822957deea2784efffbcf8/d3be9/exp4.webp 480w,
+/static/c3f4a4bf5e822957deea2784efffbcf8/5f588/exp4.webp 516w&quot;
+              sizes=&quot;(max-width: 516px) 100vw, 516px&quot;
+              type=&quot;image/webp&quot;
+            /&gt;
+          &lt;source
+            srcset=&quot;/static/c3f4a4bf5e822957deea2784efffbcf8/8ff5a/exp4.png 240w,
+/static/c3f4a4bf5e822957deea2784efffbcf8/e85cb/exp4.png 480w,
+/static/c3f4a4bf5e822957deea2784efffbcf8/75dcb/exp4.png 516w&quot;
+            sizes=&quot;(max-width: 516px) 100vw, 516px&quot;
+            type=&quot;image/png&quot;
+          /&gt;
+          &lt;img
+            class=&quot;gatsby-resp-image-image&quot;
+            src=&quot;/static/c3f4a4bf5e822957deea2784efffbcf8/75dcb/exp4.png&quot;
+            alt=&quot;exp 4&quot;
+            title=&quot;exp 4&quot;
+            loading=&quot;lazy&quot;
+            style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+          /&gt;
+        &lt;/picture&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 519px; &quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/afe8fc9d316f2914f9625bc007354246/b23ad/exp5.png&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 88.33333333333333%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAASCAYAAABb0P4QAAAACXBIWXMAAAsTAAALEwEAmpwYAAADgElEQVQ4y11U147jOBDU///SPtxigb2xLCtYVs5ZDrKcxuM8tUUaCxzOAE1SYje7K0i5Xq/YbDYYhgHjOGK/33Peyf12u8VquURd11iuVlhxLLlfrTiW7/Wy79F1HZqmwe12g/J6vfB4PvH9/Y3tbkSaRDzc4/l44BtgQAfTNFG3PWoGRWGELImRpSmyPEdVFMizHJ7n4cEY5clku+2IgWPNSouilLeOTH44HrBar5AzUFSXMknTtGjqBjEvzrJUvu9Zadc2uLBbhUXAWbiYzXSUZQnH8ZiggOe68INIBiQikAlFspaVjry8qmrYto2U75IsY9s9LhcmFH13xMTzXNhzAwseiooAfhWibZYSp5JtiYCWCZc82xCzNM2hTqeIoghhGMKPYlZ4YcvEcDts4Tkuq7MRBCHciMljh1WtJWFhEKBbdpKcjvhmeYaQCSxiG3P2/QDzxRynzxMUkXVuGazO5i28KQwIfAxtMsX0YyqJqKuKOPVvlglBWeayMtFyyAISkiTWh+MRyp3MhCGrI2Ypb3bZekEs4zgihj4xXGPNJHsSJGQliNpyboilaLXv37AIMs9fX1DKssKHprHCObTZDLo+g8a9ZVrQDQ2aqsK0LFgc+oz76YQk2jB1HZPJB1R1Cts0+FzFitgqPf8EY0KcaUYpsJ2czOV5KYnoiV1DSeRFzqpjKRHxe1Fu9/uNGqZeX0+5F0O5XC7Y73bYyTHKWbjlv+P8+YnT6YQjMTqfz3IcjyeI2C+2KdZiPB7Pt2z+Bh4OB5mwZbV/bdiSlJlhUKeUlOOgItOLxYKtqlJ/AkeN8vn970TGSutdKUhhm/v9jvvtQQdkFLYv2Q7IeuBHqIl1yJaF4N8Q0S1pRr8PPONQSoWEQjmxqqk6g0MvCmeYrs2ACgH3WZKgZHBI/3ZtS41G0oZrykd00NGioquubyXe4nugXIjBgtUEXoAkJhljRXvVXIuqSinuXPibX5c0eXv6k5heb1fK5CzX57PY394VNrz5x89/+EWxoOkGfv36TRv6lMgUBmUicBM+F/o0KBWDeM4tEy6fTyaqdIw2U4mz9sawYAu2s0CSJjJIWEgoP6YDLAaGcQDXdaBThy7J8AMPpqEzqYWYUFRNh5atZ1lMC2+gfLHco2B3v+ODQUpHeHKgQ4bNgP1hx/2Z4HM+HeW5YdxjQzKe1OD/f38ACqolH+/lZhcAAAAASUVORK5CYII=&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;picture&gt;
+          &lt;source
+              srcset=&quot;/static/afe8fc9d316f2914f9625bc007354246/8ac56/exp5.webp 240w,
+/static/afe8fc9d316f2914f9625bc007354246/d3be9/exp5.webp 480w,
+/static/afe8fc9d316f2914f9625bc007354246/ad2dd/exp5.webp 519w&quot;
+              sizes=&quot;(max-width: 519px) 100vw, 519px&quot;
+              type=&quot;image/webp&quot;
+            /&gt;
+          &lt;source
+            srcset=&quot;/static/afe8fc9d316f2914f9625bc007354246/8ff5a/exp5.png 240w,
+/static/afe8fc9d316f2914f9625bc007354246/e85cb/exp5.png 480w,
+/static/afe8fc9d316f2914f9625bc007354246/b23ad/exp5.png 519w&quot;
+            sizes=&quot;(max-width: 519px) 100vw, 519px&quot;
+            type=&quot;image/png&quot;
+          /&gt;
+          &lt;img
+            class=&quot;gatsby-resp-image-image&quot;
+            src=&quot;/static/afe8fc9d316f2914f9625bc007354246/b23ad/exp5.png&quot;
+            alt=&quot;exp 5&quot;
+            title=&quot;exp 5&quot;
+            loading=&quot;lazy&quot;
+            style=&quot;width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;&quot;
+          /&gt;
+        &lt;/picture&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;
+&lt;h2 id=&quot;conclusion&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#conclusion&quot; aria-label=&quot;conclusion permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;I find this paper captivating and useful since it opens new possibilities of developing a unified architecture for
+computer vision and natural language processing tasks, which can benefit both fields and accelerate shared research.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[Historical Manuscripts Recongition using AttentionOCR — AI Journey 2020]]></title><description><![CDATA[In this article we want to share our team’s 2nd place solution for Artificial Intelligence Journey Junior 2020 Competition (Digital Peter track). This contest was about line-by-line recognition of Peter the Great’s manuscripts. The task is related to several AI technologies (Computer Vision, NLP, and knowledge graphs).]]></description><link>https://xzcodes.github.io/posts/aijourney2020</link><guid isPermaLink="false">https://xzcodes.github.io/posts/aijourney2020</guid><pubDate>Thu, 26 Nov 2020 23:46:37 GMT</pubDate><content:encoded>&lt;p&gt;&lt;b&gt;OCR (Optical Character Recognition)&lt;/b&gt; is a quite common task in computer vision. There are plenty of methods, approaches and tools for solving this kind of problems. However, when it comes to working with unusual data like manuscripts or ancient records, you have to implement your own unique approach since there are no open-source packages for this particular task.
+&lt;br&gt;&lt;br&gt;
+In this article we want to share our team’s &lt;b&gt;2nd place solution for Artificial Intelligence Journey Junior 2020 Competition (Digital Peter track)&lt;/b&gt;. This contest was about line-by-line recognition of Peter the Great’s manuscripts. The task is related to several AI technologies (Computer Vision, NLP, and knowledge graphs). Competition data was prepared by Sberbank of Russia, Saint Petersburg Institute of History (N.P.Lihachov mansion) of Russian Academy of Sciences, Federal Archival Agency of Russia and Russian State Archive of Ancient Acts.&lt;/p&gt;
+&lt;p&gt;Our team:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Maksim Zhdanov: &lt;a href=&quot;https://github.com/xzcodes&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;GitHub&lt;/a&gt;, &lt;a href=&quot;https://www.linkedin.com/in/maksim-zhdanov-2a2b7819a/&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;LinkedIn&lt;/a&gt;, &lt;a href=&quot;https://www.kaggle.com/dwdkills&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;Kaggle&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Vadim Timakin: &lt;a href=&quot;https://github.com/t0efL&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;GitHub&lt;/a&gt;, &lt;a href=&quot;https://www.linkedin.com/in/vadim-timakin-6298b91b6/&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;LinkedIn&lt;/a&gt;, &lt;a href=&quot;https://www.kaggle.com/vadimtimakin&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;Kaggle&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;data-description&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#data-description&quot; aria-label=&quot;data description permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Data description&lt;/h3&gt;
+&lt;p&gt;So, let’s breakdown the data. We had more than 6000 images with cut lines from the manuscripts. There could be single characters, words or even very long sentences, so image size differed for each picture. Let’s look at the example of an image:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://miro.medium.com/max/875/0*nDIU-hI0gTjs0pkb.jpg&quot; alt=&quot;Regular sample that contains a whole sentence&quot;&gt;&lt;/p&gt;
+&lt;p&gt;Kind of bad handwriting, huh? In fact, AI can achieve quite low character error rate (CER) in this task. The label for that sample:
+&lt;br&gt;
+&lt;b&gt;зело многа в гафѣ i непърестано выхо&lt;/b&gt;&lt;/p&gt;
+&lt;p&gt;Also, there were vertical rotated samples in the training set, which influenced error a lot, so that had to be fixed. Moreover, training data contained loads of images with crossed text.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://miro.medium.com/max/469/0*Y8YVh1hlntYQXUQA.png&quot; alt=&quot;Short sample with crossed text&quot;&gt;&lt;/p&gt;
+&lt;h3 id=&quot;data-processing&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#data-processing&quot; aria-label=&quot;data processing permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Data processing&lt;/h3&gt;
+&lt;p&gt;In this section you can learn about useful ideas in data processing that boosted our score.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;b&gt;Transforming images to grayscale.&lt;/b&gt; Pretty obvious that inputing handwriting text in grayscale helps as it becomes easier to learn important features from text.&lt;/li&gt;
+&lt;li&gt;&lt;b&gt;Tiny image rotation.&lt;/b&gt; We rotated our samples in range from -2 to 2 degrees to expand the training set. That helped a lot.&lt;/li&gt;
+&lt;li&gt;&lt;b&gt;Downscaling images.&lt;/b&gt; We noticed that after applying rotation some small letters could erase, so we downscaled images for a bit to ensure that everything is ok.
+&lt;br&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&quot;https://miro.medium.com/max/633/0*pJEIQu5n9-xJgAw_&quot; alt=&quot;Downscaled images. Default background is white, black was chosen just for transparency&quot;&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;b&gt;Smart resizing.&lt;/b&gt; Implementation of this approach is especially interesting. Since we had various image sizes, samples those contained only one letter were highly stretched out because of the resizing parameters (width = 1024, height = 128). It was crucial to save aspect ratios of an images. The solution was a concatenation of original image with a white area on different sides to transform image’s aspect ratio to 8:1 (1024:128).
+&lt;br&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&quot;https://miro.medium.com/max/875/0*3knr-JZnxPFqj8IV.png&quot; alt=&quot;That’s how this method works&quot;&gt;&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; numpy &lt;span class=&quot;token keyword&quot;&gt;as&lt;/span&gt; np
+&lt;span class=&quot;token keyword&quot;&gt;from&lt;/span&gt; PIL &lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; Image
+&lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; cv2
+&lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; PIL
+
+&lt;span class=&quot;token keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;SmartResize&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token triple-quoted-string string&quot;&gt;&quot;&quot;&quot;
+    Resizes image avoiding changing its aspect ratio.
+    &quot;&quot;&quot;&lt;/span&gt;
+ 
+    &lt;span class=&quot;token keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;__init__&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;self&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; width&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; height&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; fillcolor&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;255&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;token triple-quoted-string string&quot;&gt;&quot;&quot;&quot;
+        Args:
+        
+            width (int): target width of the image.
+            
+            height (int): target height of the image.
+            
+            fillcolor (int): defults to 255 - white. Number in range [0, 255]
+            representing fillcolor.
+        &quot;&quot;&quot;&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;assert&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;=&lt;/span&gt; fillcolor &lt;span class=&quot;token operator&quot;&gt;&amp;lt;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;255&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token string&quot;&gt;&quot;fillcolor has to contain values in &quot;&lt;/span&gt; \
+                                      &lt;span class=&quot;token string&quot;&gt;&quot;range [0, 255]. &quot;&lt;/span&gt;
+ 
+        self&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;width &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;width&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+        self&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;height &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;height&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+        self&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;ratio &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;width &lt;span class=&quot;token operator&quot;&gt;/&lt;/span&gt; height&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+        self&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;color &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; fillcolor
+ 
+    &lt;span class=&quot;token keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;__call__&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;self&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; img&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; PIL&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;Image&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;Image&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;token triple-quoted-string string&quot;&gt;&quot;&quot;&quot;
+        Transformation.
+        Args:
+            img (PIL.Image.Image): RGB PIL image which has to be transformed.
+        &quot;&quot;&quot;&lt;/span&gt;
+        img &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; np&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;array&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;img&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+        h&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; w&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; _ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; img&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;shape
+ 
+        &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token keyword&quot;&gt;not&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;w &lt;span class=&quot;token operator&quot;&gt;/&lt;/span&gt; h&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; self&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;ratio&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;w &lt;span class=&quot;token operator&quot;&gt;/&lt;/span&gt; h&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&lt;/span&gt; self&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;ratio&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+                white &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; np&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;zeros&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;h&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; self&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;ratio &lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt; h &lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt; w&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; dtype&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;np&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;uint8&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+                white&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;fill&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;self&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;color&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+                img &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; cv2&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;hconcat&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;img&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; white&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+            &lt;span class=&quot;token keyword&quot;&gt;elif&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;w &lt;span class=&quot;token operator&quot;&gt;/&lt;/span&gt; h&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; self&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;ratio&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+                white &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; np&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;zeros&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+                    &lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;w &lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt; self&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;ratio &lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt; h&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;//&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;self&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;ratio &lt;span class=&quot;token operator&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; w&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+                    dtype&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;np&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;uint8&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+                white&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;fill&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;self&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;color&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+                img &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; cv2&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;vconcat&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;white&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; img&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; white&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+        img &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; cv2&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;resize&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;img&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;self&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;width&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; self&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;height&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+ 
+        img &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; Image&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;fromarray&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;img&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;astype&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;np&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;uint8&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; img
+ 
+    &lt;span class=&quot;token keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;__repr__&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;self&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;token triple-quoted-string string&quot;&gt;&quot;&quot;&quot;Representation.&quot;&quot;&quot;&lt;/span&gt;
+        &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;token string-interpolation&quot;&gt;&lt;span class=&quot;token string&quot;&gt;f&apos;&lt;/span&gt;&lt;span class=&quot;token interpolation&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;self&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;__class__&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;__name__&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;(width=&lt;/span&gt;&lt;span class=&quot;token interpolation&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;self&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;width&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;, height=&quot;&lt;/span&gt;&lt;span class=&quot;token interpolation&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;self&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;height&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;, ratio=&lt;/span&gt;&lt;span class=&quot;token interpolation&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;self&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;ratio&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;) &apos;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;b&gt;Extra lines augmentation.&lt;/b&gt; A huge boost was given by an inserting single or several thin black lines into an image. We reckon that this method helped our model to recognize samples with crossed text better.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&quot;https://miro.medium.com/max/469/1*9nwhBkV9rCmGX8kcC9F-Zw.png&quot; alt=&quot;Extra lines augmentation with a single line&quot;&gt;&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;python&quot;&gt;&lt;pre class=&quot;language-python&quot;&gt;&lt;code class=&quot;language-python&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; numpy &lt;span class=&quot;token keyword&quot;&gt;as&lt;/span&gt; np
+&lt;span class=&quot;token keyword&quot;&gt;from&lt;/span&gt; PIL &lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; Image&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; ImageDraw
+&lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; cv2
+&lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; random
+
+&lt;span class=&quot;token keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;token class-name&quot;&gt;ExtraLinesAugmentation&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;token triple-quoted-string string&quot;&gt;&apos;&apos;&apos;
+  Add random black lines to an image
+  Args:
+    number_of_lines (int): number of black lines to add
+    width_of_lines (int): width of lines
+  &apos;&apos;&apos;&lt;/span&gt;
+
+  &lt;span class=&quot;token keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;__init__&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;self&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; number_of_lines&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; width_of_lines&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    self&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;number_of_lines &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; number_of_lines
+    self&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;width_of_lines &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; width_of_lines
+  
+  &lt;span class=&quot;token keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;__call__&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;self&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; img&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token triple-quoted-string string&quot;&gt;&apos;&apos;&apos;
+    Args:
+      img (PIL Image): image to draw lines on
+    Returns:
+      PIL Image: image with drawn lines
+    &apos;&apos;&apos;&lt;/span&gt;
+
+    draw &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; ImageDraw&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;Draw&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;img&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; _ &lt;span class=&quot;token keyword&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;self&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;number_of_lines&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+      x1 &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; random&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;randint&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; np&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;array&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;img&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;shape&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; y1 &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; random&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;randint&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; np&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;array&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;img&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;shape&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+      x2 &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; random&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;randint&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; np&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;array&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;img&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;shape&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; y2 &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; random&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;randint&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; np&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;array&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;img&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;shape&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+      draw&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;line&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;x1&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; y1&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; x2 &lt;span class=&quot;token operator&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; y2&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; fill&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; width&lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt;self&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;width_of_lines&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; img
+  
+  &lt;span class=&quot;token keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;__repr__&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;self&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;token string-interpolation&quot;&gt;&lt;span class=&quot;token string&quot;&gt;f&apos;&lt;/span&gt;&lt;span class=&quot;token interpolation&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;self&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;__class__&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;__name__&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;(number_of_lines=&lt;/span&gt;&lt;span class=&quot;token interpolation&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;self&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;number_of_lines&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;, width_of_lines=&quot;&lt;/span&gt;&lt;span class=&quot;token interpolation&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;self&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;width_of_lines&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token string&quot;&gt;&quot;)&apos;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;b&gt;Postprocessing.&lt;/b&gt; We faced significant issues with predictions of spaces. There were many times out model predicted two parts of one word separately and two words merged. Because of that we used postprocessing with huge dictionaries. We acquired them from parsing all training labels (around 9k words) and then we parsed words from official language models provided by competition hosts (around 160k words as the final result). This tweak works like that:
+&lt;br&gt;&lt;b&gt;Predicted: we gave you a pre sent
+&lt;br&gt;After PP: we gave you a present&lt;/b&gt;&lt;/li&gt;
+&lt;li&gt;&lt;b&gt;Rotating vertical samples.&lt;/b&gt; This method is related only to our case since we had plenty of vertical samples in the training set (with vertically written text as well). So, 90 degree rotation of these images boosted score a lot.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;model-overview&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#model-overview&quot; aria-label=&quot;model overview permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Model overview&lt;/h3&gt;
+&lt;p&gt;We used seq2seq model (extracting features using CNN as a backbone + encoder-decoder transfromer for generating output).
+In fact, we started with the amazing baseline created by &lt;a href=&quot;https://github.com/vlomme/OCR-transformer&quot; target=&quot;_blank&quot; rel=&quot;nofollow noopener noreferrer&quot;&gt;Vladislav Kramarenko&lt;/a&gt;.
+For backbone we chose two main models:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;ResNeXt101_32x8d&lt;/li&gt;
+&lt;li&gt;DenseNet161&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Also, we used AdamW as the optimizer, ReduceLROnPlateau as the scheduler and the simple CrossEntropyLoss. Of course, we tuned some hyperparameters such as learning rate, batch size, dropout and etc.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://miro.medium.com/max/875/1*bcS1b2viGj9_SKh2HLmeKQ.png&quot; alt=&quot;Simple scheme of the approach&quot;&gt;&lt;/p&gt;
+&lt;p&gt;Finally, we implemented ensemble technique for 3 backbones. We didn’t use our best model with smart resize for this ensemble as
+its submission failed due to the time limit (moreover we kept our 9k dictionary due to the same problem).&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;DenseNet161 (with latest clean samples and smart resize, CER 5.025, Val CER 4.553)&lt;/li&gt;
+&lt;li&gt;ResNeXt101 (with latest clean samples and smart resize, CER 5.047, Val CER 4.750)&lt;/li&gt;
+&lt;li&gt;ResNeXt101(with standard samples and default resize, CER 5.286, Val CER 4.711)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;— — — — — — — — — — — — — — — — — — — — — —
+&lt;br&gt;
+&lt;b&gt;Final public score: CER 4.789, WER 24.068, String Accuracy 45.157&lt;/b&gt;&lt;/p&gt;
+&lt;h3 id=&quot;conclusion&quot; style=&quot;position:relative;&quot;&gt;&lt;a href=&quot;#conclusion&quot; aria-label=&quot;conclusion permalink&quot; class=&quot;anchor before&quot;&gt;&lt;svg aria-hidden=&quot;true&quot; focusable=&quot;false&quot; height=&quot;16&quot; version=&quot;1.1&quot; viewBox=&quot;0 0 16 16&quot; width=&quot;16&quot;&gt;&lt;path fill-rule=&quot;evenodd&quot; d=&quot;M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;Conclusion&lt;/h3&gt;
+&lt;p&gt;In this contest we learned a lot of stuff related to OCR problem. And we hope ideas mentioned in this article will help you to boost your model perfomance.
+This concludes our post about AI Journey 2020 Competition.&lt;/p&gt;</content:encoded></item></channel></rss>

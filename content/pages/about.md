@@ -4,10 +4,16 @@ template: "page"
 socialImage: "/media/image-2.jpg"
 ---
 
-Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante.
+I'm Maksim Zhdanov, machine learning and deep learning engineer from small provincial town in cold Siberia, Russia. Currently I'm studying in 11th grade in my school. 
+My main field of interest is computer vision. I started to learn AI when I was 16.
 
-![Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, commodo vitae, ornare sit amet, wisi.](/media/image-2.jpg)
-
-*Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, commodo vitae, ornare sit amet, wisi.*
-
-Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. Donec non enim in turpis pulvinar facilisis. Ut felis. Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus
+### Data Science
+I started my data science journey in the early 2020 with simple classification and regression tasks.
+Then I took part in my first Kaggle competition and it motivated me to learn faster and faster. Competitive machine learning became one of the most
+captivating activities to me as I was learning many new approaches for various tasks. I have worked with image classification, object detection, 
+optical character recognition (OCR), signal processing, tabular data processing and time-series forecasting problems.
+<br><br>
+Also I'm developing MLAAS platform for easy, fast and convenient training of various models with various types of data. I'm planning to release an MVP in the fall of 2021
+with my collaborators.
+<br><br>
+Moreover, I'm intrested in conducting research and taking part in conferences. Got a "Best ODS Speaker 2020 Award" from ODS.ai community for my talk on DataFest 2020.

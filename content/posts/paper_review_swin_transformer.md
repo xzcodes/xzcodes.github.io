@@ -55,7 +55,7 @@ Here is the comparison of computational complexities of a global MSE module and 
 
 ![complexities](/media/paper_review_swin_transformer/complexities.png)
 
-Moreover, there is an idea about transferring shifted window partioning strategy to the next MSA block to create
+Moreover, there is an idea about transferring shifted window partitioning strategy to the next MSA block to create
 additional connections across windows.<br>
 Computation of Swin Transformer blocks:
 

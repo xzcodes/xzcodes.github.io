@@ -27,7 +27,7 @@ predictions at the pixel level.
 <br><br>
 Authors offer stratagies to solve these challenges:
 * Hierarchical feature maps for convenient utilization of techniques like feature pyramid networks (FPN) or U-Net for dense predictions.
-* Computing self-attention locally within non-overlapping windows with equal number of pathes to achieve linear complexity.
+* Computing self-attention locally within non-overlapping windows with equal number of patches to achieve linear complexity.
 
 ![fig 1](/media/paper_review_swin_transformer/fig_1.jpg)
 
@@ -40,7 +40,7 @@ while achieving the best speed-accuracy trade-off on image classification.
 
 #### Overall Architecture
 
-1. Splitting RGB image into non-overlapping pathes (tokens).
+1. Splitting RGB image into non-overlapping patches (tokens).
 2. Applying linear embedding layer to translate raw feature into an arbitrary dimension.
 3. Applying several Swin Transformer blocks with modified self-attention computation and maintaining the number of tokens.
 4. Reducing number of tokens by patch merging layers creating the same feature map resolutions like those in common CNNs.

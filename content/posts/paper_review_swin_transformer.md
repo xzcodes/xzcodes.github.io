@@ -7,6 +7,10 @@ slug: "paper-review-swin-transformer"
 category: "Paper Review"
 tags:
   - "Computer Vision"
+  - "Image Classification"
+  - "Instance Segmentation"
+  - "Object Detection"
+  - "Semantic Segmentation"
 description: "My review of the paper Swin Transformer: Hierarchical Vision Transformer using Shifted Windows"
 socialImage: "/media/paper_review_swin_transformer/review_collage.png"
 ---
@@ -25,7 +29,7 @@ However in contrast to the word tokens, visual elements can be different in scal
 Secondly, computational complexity of self-attention is quadratic to image size, causing problems in vision tasks with dense
 predictions at the pixel level.
 <br><br>
-Authors offer stratagies to solve these challenges:
+Authors offer strategies to solve these challenges:
 * Hierarchical feature maps for convenient utilization of techniques like feature pyramid networks (FPN) or U-Net for dense predictions.
 * Computing self-attention locally within non-overlapping windows with equal number of patches to achieve linear complexity.
 

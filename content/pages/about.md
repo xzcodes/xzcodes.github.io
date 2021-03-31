@@ -4,8 +4,8 @@ template: "page"
 socialImage: "/media/image-2.jpg"
 ---
 
-I'm Maksim Zhdanov, machine learning and deep learning engineer from small provincial town in cold Siberia, Russia. Currently I'm studying in 11th grade in my school. 
-My main field of interest is computer vision. I started to learn AI when I was 16.
+I'm Maksim Zhdanov, machine learning engineer from small provincial town in cold Siberia, Russia. Currently I'm studying in 10th grade in my school. 
+My main field of interest is computer vision. I keen on solving difficult ML / DL problems.
 
 ### Data Science
 I started my data science journey in the early 2020 with simple classification and regression tasks.

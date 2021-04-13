@@ -10,8 +10,8 @@ My main field of interest is computer vision. I keen on solving difficult ML / D
 ### Data Science
 I started my data science journey in the early 2020 with simple classification and regression tasks.
 Then I took part in my first Kaggle competition and it motivated me to learn faster and faster. Competitive machine learning became one of the most
-captivating activities to me as I was learning many new approaches for various tasks. I have worked with image classification, object detection, 
-optical character recognition (OCR), signal processing, tabular data processing and time-series forecasting problems.
+captivating activities to me as I was learning many new approaches for various tasks. I have worked with image classification, text sequence classification, 
+object detection, image captioning, optical character recognition (OCR), signal processing, tabular data processing and time-series forecasting problems.
 <br><br>
 Also I'm developing MLAAS platform for easy, fast and convenient training of various models with various types of data. I'm planning to release an MVP in the fall of 2021
 with my collaborators.

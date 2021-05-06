@@ -8,7 +8,7 @@ I'm Maksim Zhdanov, 17 y.o machine learning engineer from small provincial town 
 My main field of interest is computer vision. I keen on solving difficult ML / DL problems.
 
 ### Data Science
-I started my data science journey in the early 2020 with simple classification and regression tasks.
+I started my data science journey in the early 2020 with simple classification tasks.
 Then I took part in my first competition and it motivated me to learn faster and faster. Competitive machine learning became one of the most
 captivating activities for me as I was learning many new approaches for various tasks. I have worked with image classification, text sequence classification, 
 object detection, image captioning, optical character recognition (OCR), signal processing, tabular data processing and time-series forecasting problems.

@@ -9,7 +9,7 @@ My main field of interest is computer vision. I keen on solving difficult ML / D
 
 ### Data Science
 I started my data science journey in the early 2020 with simple classification tasks.
-Then I took part in my first competition and it motivated me to learn faster and faster. Competitive machine learning became one of the most
+Then I took part in my first international competition on Kaggle and it motivated me to learn faster and faster. Competitive machine learning became one of the most
 captivating activities for me as I was learning many new approaches for various tasks. I have worked with image classification, text sequence classification, 
 object detection, image captioning, optical character recognition (OCR), signal processing, tabular data processing and time-series forecasting problems.
 <br><br>
